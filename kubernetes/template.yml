@@ -1,0 +1,114 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ITSM
+  labels:
+    app: ITSM
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ITSM
+  template:
+    metadata:
+      labels:
+        app: ITSM
+    spec:
+      containers:
+        - name: ITSM
+          image: username/ITSM:latest
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 120
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 5
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: BPM
+  labels:
+    app: BPM
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: BPM
+  template:
+    metadata:
+      labels:
+        app: BPM
+    spec:
+      containers:
+        - name: BPM
+          image: username/BPM:latest
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 120
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 5
+
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ITSM
+  labels:
+    app: ITSM
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: ITSM
+
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: BPM
+  labels:
+    app: BPM
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: BPM
+
